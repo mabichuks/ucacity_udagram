@@ -1,0 +1,11 @@
+[
+    {
+		"ParameterKey": "EnvironmentName",
+		"ParameterValue": "UdacityUdagram"
+	},
+
+    {
+        "ParameterKey": "ImageId",
+		"ParameterValue": "ami-052efd3df9dad4825"  
+    }
+]
