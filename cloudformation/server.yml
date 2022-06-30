@@ -56,17 +56,12 @@ Resources:
         ToPort: 65535
         CidrIp: 0.0.0.0/0
 
-  S3ReadOnlyEC2Profile:
-    Type: AWS::IAM::InstanceProfile
-    Properties: 
-      Roles:
-        - S3ReadOnlyEC2Role
-
   WebAppLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
       UserData:
         Fn::Base64: !Sub |
+          #!/bin/bash
           apt-get update -y
           apt-get install apache2 -y
           systemctl start apache2.service
@@ -75,10 +70,10 @@ Resources:
 
       # ToDo: AMI ID of Ubuntu Linux machine. Too get one, try creating a VM from the web console. 
       ImageId: !Ref ImageId
-      IamInstanceProfile: !Ref S3ReadOnlyEC2Profile  # This EC2 IAM role had to be created first 
+      #IamInstanceProfile: !Ref S3ReadOnlyEC2Profile  # This EC2 IAM role had to be created first 
       SecurityGroups:
       - Ref: WebServerSecGroup
-      InstanceType: t3.medium
+      InstanceType: t2.micro
       BlockDeviceMappings:
       - DeviceName: "/dev/sdk"
         Ebs:
@@ -88,8 +83,7 @@ Resources:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       VPCZoneIdentifier:
-      - Fn::ImportValue:
-          !Sub "${EnvironmentName}-PRIV-NETS"
+      - Fn::ImportValue: !Sub "${EnvironmentName}-PRIV-NETS"
       LaunchConfigurationName:
         Ref: WebAppLaunchConfig
       MinSize: '4'
@@ -108,6 +102,7 @@ Resources:
 
   Listener:
     Type: AWS::ElasticLoadBalancingV2::Listener
+    DependsOn: ["WebAppLB" , "WebAppTargetGroup"]
     Properties:
       DefaultActions:
       - Type: forward
@@ -115,7 +110,7 @@ Resources:
           Ref: WebAppTargetGroup
       LoadBalancerArn:
         Ref: WebAppLB
-      Port: '80'
+      Port: 80
       Protocol: HTTP
 
   ALBListenerRule:
@@ -133,7 +128,7 @@ Resources:
   WebAppTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      HealthCheckIntervalSeconds: 10
+      HealthCheckIntervalSeconds: 30
       HealthCheckPath: /
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 8
