@@ -1,7 +1,7 @@
 Description: >
   This template deploys an Application Load Balancer with an associated
   Listener and Security Group rules, and deploys an AutoScaling Group of
-  t3.medium EC2 instances with a minimum of 4 instances and a maximum
+  t3.small EC2 instances with a minimum of 4 instances and a maximum
   of 6 instances with associated Security Group rules and an associated 
   Launch Configuration that downloads the Web Application code from an
   S3 Bucket.
@@ -73,7 +73,7 @@ Resources:
       #IamInstanceProfile: !Ref S3ReadOnlyEC2Profile  # This EC2 IAM role had to be created first 
       SecurityGroups:
       - Ref: WebServerSecGroup
-      InstanceType: t2.micro
+      InstanceType: t3.small
       BlockDeviceMappings:
       - DeviceName: "/dev/sdk"
         Ebs:
