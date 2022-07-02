@@ -1,0 +1,13 @@
+version: 2.1
+
+jobs:
+  print_name:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - run: echo $NAME
+
+workflows:
+  say-hello-workflow:
+    jobs:
+      - print_name
