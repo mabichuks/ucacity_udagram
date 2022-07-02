@@ -8,6 +8,6 @@ jobs:
       - run: echo $NAME
 
 workflows:
-  say-hello-workflow:
+  print-name-workflow:
     jobs:
       - print_name
