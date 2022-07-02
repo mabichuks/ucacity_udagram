@@ -30,11 +30,15 @@ jobs:
       - run:
           name: "Print world"
           command: "echo World"
+
   print_name:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      - run: echo $NAME
+      - run: 
+          name: "Prints my name"
+          command: |
+            echo $NAME
 
 
 # Invoke jobs via workflows
