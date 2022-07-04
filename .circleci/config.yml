@@ -20,7 +20,7 @@ jobs:
   
   print_output_file:
     docker:
-      - image:
+      - image: circleci/node:13.8.0
     steps:
       - attach_workspace:
           at: ~/
