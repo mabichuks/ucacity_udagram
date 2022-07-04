@@ -5,40 +5,28 @@ version: 2.1
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
-  print_hello:
-    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
+  save_hello_world_output:
     docker:
       - image: circleci/node:13.8.0
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
-      - checkout
       - run:
-          name: "Print hello"
-          command: "echo Hello"
+          name: "Print to file"
+          command: echo "My name id chukwuma mabi" > output.txt
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - output.txt
 
-  print_world:
-    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
+  
+  print_output_file:
     docker:
-      - image: circleci/node:13.8.0
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
+      - image:
     steps:
-      - checkout
+      - attach_workspace:
+          at: ~/
       - run:
-          name: "Print world"
-          command: "echo World"
-
-  print_name:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - run: 
-          name: "Prints my name"
-          command: |
-            echo $NAME
+          name: "Print from file"
+          command: cat ~/output.txt
 
 
 # Invoke jobs via workflows
@@ -46,8 +34,7 @@ jobs:
 workflows:
   say-hello-workflow:
     jobs:
-      - print_hello
-      - print_world:
+      - save_hello_world_output
+      - print_output_file:
           requires:
-            - print_hello
-      - print_name
+            - save_hello_world_output
