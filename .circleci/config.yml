@@ -11,7 +11,7 @@ jobs:
     steps:
       - run:
           name: "Print to file"
-          command: echo "My name id chukwuma mabi" > output.txt
+          command: echo "My name id chukwuma mabi" > ~/output.txt
       - persist_to_workspace:
           root: ~/
           paths:
