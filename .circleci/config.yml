@@ -5,13 +5,15 @@ version: 2.1
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 
-command:
+commands:
   print_pipeline_id:
     description: Prints the Id of the pipeline
     parameters:
-      to:
+      id:
         type: string
         default: ${CIRCLE_WORKFLOW_ID}
+    steps:
+      - run: echo <<parameters.id>>
 
 
 jobs:  
@@ -19,7 +21,7 @@ jobs:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      - run: echo <<print_pipeline_id.id>>
+      - print_pipeline_id
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
